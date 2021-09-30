@@ -1,8 +1,10 @@
 package io.flowguard.uniplas.asnprovider
 
-import collection.JavaConverters.*
+import com.comcast.ip4s.Cidr
+import io.flowguard.uniplas.asnprovider.helpers.DecodedRecord
 import io.flowguard.uniplas.asnprovider.helpers.getValidAndReportFailed
 import io.flowguard.uniplas.asnprovider.models.AsnRecord
+import wvlet.log.LogSupport
 
 import java.io.ByteArrayInputStream
 import java.io.FileInputStream
@@ -13,14 +15,14 @@ import java.util.zip
 import java.util.zip.ZipInputStream
 import scala.annotation.tailrec
 import scala.io.Source
-import io.flowguard.uniplas.asnprovider.helpers.DecodedRecord
-import com.comcast.ip4s.Cidr
+
+import collection.JavaConverters.*
 
 trait AsnProvider {
     def load: Seq[AsnRecord]
 }
 
-class GeoLiteProvider(apiKey: String) extends AsnProvider {
+class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
   val permaLink =
     s"https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=$apiKey&suffix=zip"
 
@@ -28,6 +30,7 @@ class GeoLiteProvider(apiKey: String) extends AsnProvider {
     def getAsnRecordsFromRaw(rawAsnTable: String) = 
       GeoLiteProvider.geoLiteRawTableToAsnRecords(rawAsnTable).flatMap(_.getValidAndReportFailed)
 
+    info("Loading Maxmind ASN database...")
     // download from source
     val asnBlocks = downloadFromMaxmindAndExtract(permaLink) // TODO download should be functional, method must be testable 
     
@@ -36,13 +39,13 @@ class GeoLiteProvider(apiKey: String) extends AsnProvider {
       case (Some(ipv4RawAsnTable), Some(ipv6RawAsnTable)) =>
         getAsnRecordsFromRaw(ipv4RawAsnTable) ++ getAsnRecordsFromRaw(ipv6RawAsnTable) 
       case (Some(ipv4RawAsnTable), None) =>
-        getAsnRecordsFromRaw(ipv4RawAsnTable)
-        // TODO log error
+        error("Can't parse ipv6 maxmind table")
+        getAsnRecordsFromRaw(ipv4RawAsnTable) // TODO should return Some and None
       case (None, Some(ipv6RawAsnTable)) =>
+        error("Can't parse ipv4 maxmind table")
         getAsnRecordsFromRaw(ipv6RawAsnTable)
-        // TODO log error
       case (None, None) => 
-        // TODO log error
+        error("Can't parse both ipv4 and ipv6 maxmind table")
         Seq.empty[AsnRecord]
     }
   }

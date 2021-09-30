@@ -8,5 +8,6 @@ lazy val root = project
 
     scalaVersion := scala3Version,
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % "test",
-    libraryDependencies += "com.comcast" %% "ip4s-core" % "3.0.3"
+    libraryDependencies += "com.comcast" %% "ip4s-core" % "3.0.3",
+    libraryDependencies += "org.wvlet.airframe" %% "airframe-log" % "21.9.0" 
   )
