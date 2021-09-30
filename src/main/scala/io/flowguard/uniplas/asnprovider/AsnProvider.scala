@@ -18,15 +18,17 @@ import scala.io.Source
 
 import collection.JavaConverters.*
 
+case class AsnDatabase(ipv4AsnRecords: Seq[AsnRecord], ipv6AsnRecords: Seq[AsnRecord]) // TODO to separate model
+
 trait AsnProvider {
-    def load: Seq[AsnRecord]
+    def load: AsnDatabase
 }
 
 class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
   val permaLink =
     s"https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=$apiKey&suffix=zip"
 
-  def load: Seq[AsnRecord] = {
+  def load: AsnDatabase = {
     def getAsnRecordsFromRaw(rawAsnTable: String) = 
       GeoLiteProvider.geoLiteRawTableToAsnRecords(rawAsnTable).flatMap(_.getValidAndReportFailed)
 
@@ -37,16 +39,17 @@ class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
     // convert to proper format
     asnBlocks match {
       case (Some(ipv4RawAsnTable), Some(ipv6RawAsnTable)) =>
-        getAsnRecordsFromRaw(ipv4RawAsnTable) ++ getAsnRecordsFromRaw(ipv6RawAsnTable) 
+        AsnDatabase(getAsnRecordsFromRaw(ipv4RawAsnTable), getAsnRecordsFromRaw(ipv6RawAsnTable))
       case (Some(ipv4RawAsnTable), None) =>
         error("Can't parse ipv6 maxmind table")
-        getAsnRecordsFromRaw(ipv4RawAsnTable) // TODO should return Some and None
+        AsnDatabase(getAsnRecordsFromRaw(ipv4RawAsnTable), Seq.empty)
       case (None, Some(ipv6RawAsnTable)) =>
         error("Can't parse ipv4 maxmind table")
         getAsnRecordsFromRaw(ipv6RawAsnTable)
+        AsnDatabase(Seq.empty, getAsnRecordsFromRaw(ipv6RawAsnTable))
       case (None, None) => 
         error("Can't parse both ipv4 and ipv6 maxmind table")
-        Seq.empty[AsnRecord]
+        AsnDatabase(Seq.empty, Seq.empty)
     }
   }
 
