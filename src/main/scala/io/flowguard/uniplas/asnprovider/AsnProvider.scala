@@ -83,7 +83,7 @@ class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
     (asnBlocks.get("ipv4"), asnBlocks.get("ipv6"))
   }
 }
-
+ 
 object GeoLiteProvider {
   /** Convert raw Maxmind ASN table to the decoded record **/
   def geoLiteRawTableToAsnRecords(rawTable: String): Seq[DecodedRecord] = {
