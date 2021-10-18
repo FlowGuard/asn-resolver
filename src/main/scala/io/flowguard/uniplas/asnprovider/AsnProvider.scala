@@ -11,7 +11,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.URL
 import java.nio.charset.StandardCharsets
-import java.util.zip
 import java.util.zip.ZipInputStream
 import scala.annotation.tailrec
 import scala.io.Source

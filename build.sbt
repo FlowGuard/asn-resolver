@@ -12,3 +12,5 @@ lazy val root = project
     libraryDependencies += "org.wvlet.airframe" %% "airframe-log" % "21.9.0"
   )
 enablePlugins(AkkaGrpcPlugin)
+
+akkaGrpcGeneratedSources := Seq(AkkaGrpc.Server)

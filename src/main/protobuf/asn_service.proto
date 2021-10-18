@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+message AsnNumRequest {
+    string ip_address = 1;
+}
+
+message AsnNumReply {
+    string asn_num = 1;
+    string asn_name = 2;
+}
+
+service AsnService {
+    rpc GetAsnNum (AsnNumRequest) returns (AsnNumReply) {}
+}
+
+option java_multiple_files = true;
+option java_package = "io.flowguard.uniplas.asnprovider.grpc";
+option java_outer_classname = "AsnService";
+
+package asnservice;
