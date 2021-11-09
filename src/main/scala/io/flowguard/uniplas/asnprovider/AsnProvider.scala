@@ -1,26 +1,32 @@
 package io.flowguard.uniplas.asnprovider
 
-import com.comcast.ip4s.Cidr
-import io.flowguard.uniplas.asnprovider.helpers.DecodedRecord
-import io.flowguard.uniplas.asnprovider.helpers.getValidAndReportFailed
+import com.comcast.ip4s.{Cidr, IpAddress}
+import io.flowguard.uniplas.asnprovider.helpers.{DecodedRecord, getValidAndReportFailed}
 import io.flowguard.uniplas.asnprovider.models.AsnRecord
 import wvlet.log.LogSupport
 
-import java.io.ByteArrayInputStream
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import java.io.{ByteArrayInputStream, FileInputStream, FileOutputStream}
 import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.util.zip.ZipInputStream
 import scala.annotation.tailrec
+import scala.collection.JavaConverters.*
 import scala.io.Source
 
-import collection.JavaConverters.*
+class AsnDatabase(val ipv4AsnRecords: Seq[AsnRecord], val ipv6AsnRecords: Seq[AsnRecord]) {
+  private val concatRecords = ipv4AsnRecords ++ ipv6AsnRecords
+  
+  def searchByIpAddress(ipAddress: IpAddress): Option[AsnRecord] = 
+    concatRecords.find(_.network.contains(ipAddress))
 
-case class AsnDatabase(ipv4AsnRecords: Seq[AsnRecord], ipv6AsnRecords: Seq[AsnRecord]) // TODO to separate model
+  def searchByAutonomousNumber(autonomousNumber: String): Seq[AsnRecord] = // TODO autonomous system number should be int
+    concatRecords.filter(_.autonomousSystemNumber == autonomousNumber)
+} // TODO to separate model
+
+
 
 trait AsnProvider {
-    def load: AsnDatabase
+  def load: AsnDatabase
 }
 
 class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
