@@ -1,12 +1,42 @@
 package io.flowguard.uniplas.asnprovider
 
-import io.flowguard.uniplas.asnprovider.grpc._
+import akka.grpc.GrpcServiceException
+import akka.grpc.scaladsl.MetadataBuilder
+import com.comcast.ip4s.IpAddress
+import io.flowguard.uniplas.asnprovider.grpc.*
+import io.flowguard.uniplas.asnprovider.models.AsnDatabase
+import wvlet.log.LogSupport
+import io.grpc.Status
 
 import scala.concurrent.Future
 
 
-class AsnServiceImpl extends AsnService {
+class AsnServiceImpl(implicit asnDatabse: AsnDatabase) extends AsnService with LogSupport {
+
+  val invalidIpAddressMetadata = new MetadataBuilder().build()
+  val asnNotFoundMetadata = new MetadataBuilder().build()
+
   def getAsnNum(in: AsnNumRequest): Future[AsnNumReply] = {
-    ???
+    logger.debug(s"New ASN request => $in")
+
+    IpAddress.fromString(in.ipAddress) match {
+      case None =>
+        logger.warn(s"Invalid ip address format for ${in.ipAddress}")
+        Future.failed {
+          new GrpcServiceException(Status.INVALID_ARGUMENT.withDescription("Invalid ip address"), invalidIpAddressMetadata)
+        }
+      case Some(ipAddress) =>
+        asnDatabse.searchByIpAddress(ipAddress) match {
+          case None =>
+            logger.warn(s"ASN not found for ip address $ipAddress")
+            Future.failed {
+              new GrpcServiceException(Status.NOT_FOUND.withDescription("ASN not found"), asnNotFoundMetadata)
+            }
+          case Some(asnRecord) =>
+            Future.successful {
+              AsnNumReply(asnRecord.autonomousSystemNumber, asnRecord.autonomousSystemOrganization)
+            }
+        }
+    }
   }
 }
