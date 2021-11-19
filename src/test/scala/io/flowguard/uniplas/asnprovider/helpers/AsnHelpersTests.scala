@@ -1,8 +1,9 @@
-package io.flowguard.uniplas.asnprovider
+package io.flowguard.uniplas.asnprovider.helpers
 
+import com.comcast.ip4s.{Cidr, IpAddress, IpLiteralSyntax}
+import io.flowguard.uniplas.asnprovider.GeoLiteProvider
 import io.flowguard.uniplas.asnprovider.models.AsnRecord
 import org.scalatest.flatspec.AnyFlatSpec
-import com.comcast.ip4s.{Cidr, IpAddress, IpLiteralSyntax}
 
 class AsnHelpersTests extends AnyFlatSpec {
   "Geolite raw table" should "be converted to the seq of asn records" in {

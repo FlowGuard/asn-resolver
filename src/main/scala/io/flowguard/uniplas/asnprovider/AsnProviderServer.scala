@@ -14,7 +14,7 @@ class AsnProviderServer(system: ActorSystem) extends LogSupport {
     // akka boot code
     implicit val sys: ActorSystem = system
     implicit val ec: ExecutionContext = sys.dispatcher
-    implicit lazy val asnDatabse: AsnDatabase = AsnDatabase.empty() // TODO
+    implicit lazy val asnDatabase: AsnDatabase = AsnDatabase.empty() // TODO
 
     // create service handlers
     val service: HttpRequest => Future[HttpResponse] = {
