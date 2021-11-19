@@ -18,11 +18,13 @@ class AsnProviderServer(system: ActorSystem) extends LogSupport {
 
     // create service handlers
     val service: HttpRequest => Future[HttpResponse] = {
-      AsnServiceHandler(new AsnServiceImpl())
+      AsnServiceHandler.withServerReflection((new AsnServiceImpl()))
     }
 
     // bind service handlers
-    val binding = Http().newServerAt("127.0.0.1", 8090).bind(service) // TODO to config
+    val binding = Http()
+      .newServerAt("127.0.0.1", 8090)
+      .bind(service) // TODO to config
     binding.foreach(b => logger.info(s"gRPC server bound to ${b.localAddress}"))
 
     binding
