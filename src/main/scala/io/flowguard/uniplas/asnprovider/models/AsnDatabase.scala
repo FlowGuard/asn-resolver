@@ -18,5 +18,6 @@ class AsnDatabase(val ipv4AsnRecords: Seq[AsnRecord], val ipv6AsnRecords: Seq[As
 }
 
 object AsnDatabase {
+  def apply(ipv4AsnRecords: Seq[AsnRecord], ipv6AsnRecords: Seq[AsnRecord]) = new AsnDatabase(ipv4AsnRecords, ipv6AsnRecords)
   def empty() = new AsnDatabase(Seq.empty[AsnRecord], Seq.empty[AsnRecord])
 }

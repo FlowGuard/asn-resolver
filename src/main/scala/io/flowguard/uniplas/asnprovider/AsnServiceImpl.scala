@@ -1,9 +1,9 @@
 package io.flowguard.uniplas.asnprovider
 
 import akka.grpc.GrpcServiceException
-import akka.grpc.scaladsl.MetadataBuilder
+import akka.grpc.scaladsl.{Metadata, MetadataBuilder}
 import com.comcast.ip4s.IpAddress
-import io.flowguard.uniplas.asnprovider.grpc.*
+import io.flowguard.uniplas.asnprovider.grpc.{AsnNumReply, AsnNumRequest, AsnService}
 import io.flowguard.uniplas.asnprovider.models.AsnDatabase
 import wvlet.log.LogSupport
 import io.grpc.Status
@@ -13,8 +13,8 @@ import scala.concurrent.Future
 
 class AsnServiceImpl(implicit asnDatabse: AsnDatabase) extends AsnService with LogSupport {
 
-  val invalidIpAddressMetadata = new MetadataBuilder().build()
-  val asnNotFoundMetadata = new MetadataBuilder().build()
+  val invalidIpAddressMetadata: Metadata = new MetadataBuilder().build()
+  val asnNotFoundMetadata: Metadata = new MetadataBuilder().build()
 
   def getAsnNum(in: AsnNumRequest): Future[AsnNumReply] = {
     logger.debug(s"New ASN request => $in")

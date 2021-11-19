@@ -1,21 +1,12 @@
 package io.flowguard.uniplas.asnprovider
 
-import com.comcast.ip4s.{Cidr, IpAddress}
-import io.flowguard.uniplas.asnprovider.helpers.{DecodedRecord, getValidAndReportFailed}
+import com.comcast.ip4s.Cidr
+import io.flowguard.uniplas.asnprovider.GeoLiteProvider.DecodedRecord
 import io.flowguard.uniplas.asnprovider.models.{AsnDatabase, AsnRecord}
 import wvlet.log.LogSupport
 
-import java.io.{ByteArrayInputStream, FileInputStream, FileOutputStream}
 import java.net.URL
-import java.nio.charset.StandardCharsets
 import java.util.zip.ZipInputStream
-import scala.annotation.tailrec
-import scala.collection.JavaConverters.*
-import scala.io.Source
-
- // TODO to separate model
-
-
 
 trait AsnProvider {
   def load: AsnDatabase
@@ -25,26 +16,38 @@ class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
   val permaLink =
     s"https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=$apiKey&suffix=zip"
 
+  def getValidOrReportFailed(d: DecodedRecord): Option[AsnRecord] = {
+    d match {
+      case Right(asnRecord) => Some(asnRecord)
+      case Left(errorLine) =>
+        println(s"can't decode $errorLine") // TODO better logging
+        None
+    }
+  }
+
   def load: AsnDatabase = {
-    def getAsnRecordsFromRaw(rawAsnTable: String) = 
-      GeoLiteProvider.geoLiteRawTableToAsnRecords(rawAsnTable).flatMap(_.getValidAndReportFailed)
+    def getAsnRecordsFromRaw(rawAsnTable: String): Seq[AsnRecord] =
+      GeoLiteProvider.geoLiteRawTableToAsnRecords(rawAsnTable).flatMap(getValidOrReportFailed)
 
     info("Loading Maxmind ASN database...")
     // download from source
-    val asnBlocks = downloadFromMaxmindAndExtract(permaLink) // TODO download should be functional, method must be testable 
-    
+    val asnBlocks = downloadFromMaxmindAndExtract(permaLink) // TODO download should be functional, method must be testable
+
     // convert to proper format
     asnBlocks match {
       case (Some(ipv4RawAsnTable), Some(ipv6RawAsnTable)) =>
-        AsnDatabase(getAsnRecordsFromRaw(ipv4RawAsnTable), getAsnRecordsFromRaw(ipv6RawAsnTable))
+        val ipv4AsnRecords = getAsnRecordsFromRaw(ipv4RawAsnTable)
+        val ipv6AsnRecords = getAsnRecordsFromRaw(ipv6RawAsnTable)
+        AsnDatabase(ipv4AsnRecords, ipv6AsnRecords)
       case (Some(ipv4RawAsnTable), None) =>
         error("Can't parse ipv6 maxmind table")
-        AsnDatabase(getAsnRecordsFromRaw(ipv4RawAsnTable), Seq.empty)
+        val ipv4AsnRecords = getAsnRecordsFromRaw(ipv4RawAsnTable)
+        AsnDatabase(ipv4AsnRecords, Seq.empty)
       case (None, Some(ipv6RawAsnTable)) =>
         error("Can't parse ipv4 maxmind table")
-        getAsnRecordsFromRaw(ipv6RawAsnTable)
-        AsnDatabase(Seq.empty, getAsnRecordsFromRaw(ipv6RawAsnTable))
-      case (None, None) => 
+        val ipv6AsnRecords = getAsnRecordsFromRaw(ipv6RawAsnTable)
+        AsnDatabase(Seq.empty, ipv6AsnRecords)
+      case (None, None) =>
         error("Can't parse both ipv4 and ipv6 maxmind table")
         AsnDatabase(Seq.empty, Seq.empty)
     }
@@ -80,21 +83,23 @@ class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
     (asnBlocks.get("ipv4"), asnBlocks.get("ipv6"))
   }
 }
- 
+
 object GeoLiteProvider {
+  type DecodedRecord = Either[String, AsnRecord]
+
   /** Convert raw Maxmind ASN table to the decoded record **/
   def geoLiteRawTableToAsnRecords(rawTable: String): Seq[DecodedRecord] = {
     val csvRecords = rawTable.split('\n').toSeq
     csvRecords.tail.map { // tail - omit csv head
       case s"$network,$autSysNumber,$autSysOrg" =>
         Cidr.fromString(network) match {
-          case Some(cidr) =>  
+          case Some(cidr) =>
             Right(AsnRecord(
               cidr,
               autSysNumber,
               autSysOrg.replaceAll("\"", ""))) // remove quotations mark from composed strings
           case None =>
-            Left(s"Invalid Cidr network $network") 
+            Left(s"Invalid Cidr network $network")
         }
       case line => Left(line)
     }

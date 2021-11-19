@@ -2,9 +2,7 @@ package io.flowguard.uniplas.asnprovider
 
 import io.flowguard.uniplas.asnprovider.models.AsnRecord
 import org.scalatest.flatspec.AnyFlatSpec
-import com.comcast.ip4s.Cidr
-import com.comcast.ip4s.IpAddress
-import com.comcast.ip4s.ip
+import com.comcast.ip4s.{Cidr, IpAddress, IpLiteralSyntax}
 
 class AsnHelpersTests extends AnyFlatSpec {
   "Geolite raw table" should "be converted to the seq of asn records" in {
@@ -23,12 +21,12 @@ class AsnHelpersTests extends AnyFlatSpec {
     val nw2 = Cidr[IpAddress](ip"1.0.4.0", 22)
     val nw3 = Cidr[IpAddress](ip"1.0.64.0", 18)
 
-    result.foreach(s => s match {
-      case Right(AsnRecord(nw1 ,"13335", "CLOUDFLARENET")) =>
-      case Right(AsnRecord(nw2 ,"38803", "Wirefreebroadband Pty Ltd")) =>
-      case Right(AsnRecord(nw3 ,"18144", "Energia Communications,Inc.")) =>
+    result.foreach {
+      case Right(AsnRecord(nw1, "13335", "CLOUDFLARENET")) =>
+      case Right(AsnRecord(nw2, "38803", "Wirefreebroadband Pty Ltd")) =>
+      case Right(AsnRecord(nw3, "18144", "Energia Communications,Inc.")) =>
       case _ => throw new AssertionError("invalid record")
-    })
+    }
   }
 
   // TODO ipv6 test
