@@ -1,16 +1,12 @@
-package io.flowguard.uniplas.asnprovider
+package io.flowguard.uniplas.asnprovider.providers
 
 import com.comcast.ip4s.Cidr
-import io.flowguard.uniplas.asnprovider.GeoLiteProvider.DecodedRecord
 import io.flowguard.uniplas.asnprovider.models.{AsnDatabase, AsnRecord}
+import io.flowguard.uniplas.asnprovider.providers.GeoLiteProvider.DecodedRecord
 import wvlet.log.LogSupport
 
 import java.net.URL
 import java.util.zip.ZipInputStream
-
-trait AsnProvider {
-  def load: AsnDatabase
-}
 
 class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
   val permaLink =
@@ -20,7 +16,8 @@ class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
     d match {
       case Right(asnRecord) => Some(asnRecord)
       case Left(errorLine) =>
-        println(s"can't decode $errorLine") // TODO better logging
+        logger.warn(s"can't decode $errorLine")
+        println(s"can't decode $errorLine")
         None
     }
   }
