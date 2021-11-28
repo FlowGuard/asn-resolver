@@ -14,7 +14,7 @@ service AsnService {
 }
 
 option java_multiple_files = true;
-option java_package = "io.flowguard.uniplas.asnprovider.grpc";
+option java_package = "io.flowguard.asnprovider.grpc";
 option java_outer_classname = "AsnService";
 
 package asnservice;

@@ -1,8 +1,8 @@
-package io.flowguard.uniplas.asnprovider.helpers
+package io.flowguard.asnprovider.helpers
 
 import com.comcast.ip4s.{Cidr, IpAddress, IpLiteralSyntax}
-import io.flowguard.uniplas.asnprovider.models.AsnRecord
-import io.flowguard.uniplas.asnprovider.providers.GeoLiteProvider
+import io.flowguard.asnprovider.models.AsnRecord
+import io.flowguard.asnprovider.providers.GeoLiteProvider
 import org.scalatest.flatspec.AnyFlatSpec
 
 class AsnHelpersTests extends AnyFlatSpec {

@@ -1,8 +1,9 @@
-package io.flowguard.uniplas.asnprovider.providers
+package io.flowguard.asnprovider.providers
 
 import com.comcast.ip4s.Cidr
-import io.flowguard.uniplas.asnprovider.models.{AsnDatabase, AsnRecord}
-import io.flowguard.uniplas.asnprovider.providers.GeoLiteProvider.DecodedRecord
+import io.flowguard.asnprovider.models.{AsnDatabase, AsnRecord}
+import io.flowguard.asnprovider.models.AsnRecord
+import GeoLiteProvider.DecodedRecord
 import wvlet.log.LogSupport
 
 import java.net.URL

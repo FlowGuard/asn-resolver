@@ -1,4 +1,4 @@
-package io.flowguard.uniplas.asnprovider.models
+package io.flowguard.asnprovider.models
 
 import com.comcast.ip4s.IpAddress
 import com.comcast.ip4s.Cidr

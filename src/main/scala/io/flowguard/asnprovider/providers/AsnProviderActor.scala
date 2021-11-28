@@ -1,9 +1,10 @@
-package io.flowguard.uniplas.asnprovider.providers
+package io.flowguard.asnprovider.providers
 
 import akka.actor.{Actor, ActorLogging, Props, Timers}
 import com.comcast.ip4s.IpAddress
-import io.flowguard.uniplas.asnprovider.models.{AsnDatabase, AsnRecord}
-import io.flowguard.uniplas.asnprovider.providers.Implicits.dummyAsnProvider // TODO dummy provider is only for testing!
+import io.flowguard.asnprovider.models.{AsnDatabase, AsnRecord}
+import io.flowguard.asnprovider.models.AsnRecord
+import Implicits.dummyAsnProvider
 
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps

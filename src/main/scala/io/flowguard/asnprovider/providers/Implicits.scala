@@ -1,5 +1,6 @@
-package io.flowguard.uniplas.asnprovider.providers
-import io.flowguard.uniplas.asnprovider.models.AsnDatabase
+package io.flowguard.asnprovider.providers
+
+import io.flowguard.asnprovider.models.AsnDatabase
 
 object Implicits {
 

@@ -1,9 +1,9 @@
-package io.flowguard.uniplas.asnprovider
+package io.flowguard.asnprovider
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
-import io.flowguard.uniplas.asnprovider.grpc.AsnServiceHandler
+import io.flowguard.asnprovider.grpc.AsnServiceHandler
 import wvlet.log.LogSupport
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -1,4 +1,4 @@
-package io.flowguard.uniplas.asnprovider
+package io.flowguard.asnprovider
 
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory

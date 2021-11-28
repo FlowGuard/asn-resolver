@@ -1,4 +1,4 @@
-package io.flowguard.uniplas.asnprovider
+package io.flowguard.asnprovider
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.grpc.GrpcServiceException
@@ -6,8 +6,9 @@ import akka.grpc.scaladsl.{Metadata, MetadataBuilder}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.comcast.ip4s.IpAddress
-import io.flowguard.uniplas.asnprovider.grpc.{AsnNumReply, AsnNumRequest, AsnService}
-import io.flowguard.uniplas.asnprovider.providers.AsnProviderActor
+import io.flowguard.asnprovider.grpc.{AsnNumReply, AsnNumRequest, AsnService}
+import io.flowguard.asnprovider.providers.AsnProviderActor
+import io.flowguard.asnprovider.grpc.AsnService
 import io.grpc.Status
 import wvlet.log.LogSupport
 
