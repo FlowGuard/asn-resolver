@@ -1,16 +1,27 @@
 package io.flowguard.uniplas.asnprovider
 
+import akka.actor.ActorSystem
 import akka.grpc.GrpcServiceException
+import akka.testkit.TestKit
 import com.comcast.ip4s.{Cidr, IpAddress, IpLiteralSyntax}
 import io.flowguard.uniplas.asnprovider.grpc.AsnNumRequest
 import io.flowguard.uniplas.asnprovider.models.{AsnDatabase, AsnRecord}
 import io.grpc.Status
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.flatspec.AnyFlatSpecLike
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AsnServiceImplTests extends AnyFlatSpec {
+class AsnServiceImplTests
+  extends TestKit(ActorSystem("AsnServiceImplSpec"))
+  with AnyFlatSpecLike
+  with BeforeAndAfterAll {
+
+  override def afterAll(): Unit = {
+    TestKit.shutdownActorSystem(system)
+  }
+
   val ipV4AsnRecords = Seq(
     AsnRecord(Cidr[IpAddress](ip"1.0.0.0", 24), "13335", "CLOUDFLARENET"),
     AsnRecord(Cidr[IpAddress](ip"1.0.4.0", 22), "38803", "Wirefreebroadband Pty Ltd")
@@ -20,7 +31,7 @@ class AsnServiceImplTests extends AnyFlatSpec {
   )
 
   implicit val asnLookup: AsnDatabase = AsnDatabase(ipV4AsnRecords, ipV6Records)
-  val asnServiceImpl = new AsnServiceImpl()
+  val asnServiceImpl = new AsnServiceImpl(system)
 
   "Asn ipv4 lookup" should "find valid value" in {
     val request = AsnNumRequest("1.0.0.10")

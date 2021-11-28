@@ -4,7 +4,6 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import io.flowguard.uniplas.asnprovider.grpc.AsnServiceHandler
-import io.flowguard.uniplas.asnprovider.models.AsnDatabase
 import wvlet.log.LogSupport
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -13,12 +12,11 @@ class AsnProviderServer(system: ActorSystem) extends LogSupport {
   def run(): Future[Http.ServerBinding] = {
     // akka boot code
     implicit val sys: ActorSystem = system
-    implicit val ec: ExecutionContext = sys.dispatcher
-    implicit lazy val asnDatabase: AsnDatabase = AsnDatabase.empty() // TODO
+    implicit val ec: ExecutionContext = system.dispatcher
 
     // create service handlers
     val service: HttpRequest => Future[HttpResponse] = {
-      AsnServiceHandler.withServerReflection((new AsnServiceImpl()))
+      AsnServiceHandler.withServerReflection(new AsnServiceImpl(system))
     }
 
     // bind service handlers
