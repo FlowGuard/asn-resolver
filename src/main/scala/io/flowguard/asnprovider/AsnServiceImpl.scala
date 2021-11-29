@@ -8,7 +8,6 @@ import akka.util.Timeout
 import com.comcast.ip4s.IpAddress
 import io.flowguard.asnprovider.grpc.{AsnNumReply, AsnNumRequest, AsnService}
 import io.flowguard.asnprovider.providers.AsnProviderActor
-import io.flowguard.asnprovider.grpc.AsnService
 import io.grpc.Status
 import wvlet.log.LogSupport
 
