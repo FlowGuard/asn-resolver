@@ -16,3 +16,6 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 .idea
+
+# local sonar
+sonar-project.properties
