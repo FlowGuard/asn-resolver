@@ -17,3 +17,5 @@ lazy val root = project
 enablePlugins(AkkaGrpcPlugin)
 
 akkaGrpcGeneratedSources := Seq(AkkaGrpc.Server)
+
+scapegoatVersion in ThisBuild := "1.4.11"
