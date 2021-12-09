@@ -15,10 +15,11 @@ import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
 class AsnServiceImpl(system: ActorSystem) extends AsnService with LogSupport {
-  val asnProviderActor: ActorRef = system.actorOf(AsnProviderActor.param, "AsnProvider")
+  private val invalidIpAddressMetadata: Metadata = new MetadataBuilder().build()
+  private val asnNotFoundMetadata: Metadata = new MetadataBuilder().build()
 
-  val invalidIpAddressMetadata: Metadata = new MetadataBuilder().build()
-  val asnNotFoundMetadata: Metadata = new MetadataBuilder().build()
+  val asnProviderActor: ActorRef =
+    system.actorOf(AsnProviderActor.param(Config.asnService.dbProvider.refreshRate), "AsnProvider")
 
   /**
    * Asn number lookup request

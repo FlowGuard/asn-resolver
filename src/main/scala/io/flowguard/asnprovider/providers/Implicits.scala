@@ -5,7 +5,6 @@ import io.flowguard.asnprovider.models.AsnDatabase
 import wvlet.log.LogSupport
 
 object Implicits extends LogSupport {
-
   implicit val dummyAsnProvider: AsnProvider = new AsnProvider {
     override def load: AsnDatabase = AsnDatabase.empty()
   }

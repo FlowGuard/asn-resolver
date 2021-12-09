@@ -3,17 +3,31 @@ package io.flowguard.asnprovider.providers
 import akka.actor.{Actor, ActorLogging, Props, Timers}
 import com.comcast.ip4s.IpAddress
 import io.flowguard.asnprovider.models.{AsnDatabase, AsnRecord}
-import io.flowguard.asnprovider.providers.Implicits.fromConfig
+import Implicits.fromConfig
 
-import scala.concurrent.duration.DurationInt
+import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class AsnProviderActor(implicit asnProvider: AsnProvider) extends Actor
+/**
+ * ASN provider actor
+ * @param refreshRate ASN database refresh rate. Database is loaded only once at startup when it is None
+ * @param asnProvider ASN provider
+ */
+class AsnProviderActor(refreshRate: Option[FiniteDuration])(implicit asnProvider: AsnProvider) extends Actor // TODO tests
   with ActorLogging // TODO logging library
   with Timers {
   import AsnProviderActor._
 
-  timers.startSingleTimer(TimerKey, RefreshAsnDatabase, 1.seconds) // TODO implement timers
+  refreshRate match {
+    case None =>
+      // load once
+      log.debug("ASN database refresh rate => only at startup")
+      timers.startSingleTimer(TimerKey, RefreshAsnDatabase, 1.seconds)
+    case Some(interval) =>
+      // load per interval
+      log.debug(s"ASN database refresh rate => ${interval.toString()}")
+      timers.startTimerWithFixedDelay(TimerKey, RefreshAsnDatabase, interval)
+  }
 
   override def receive: Receive = search(AsnDatabase.empty())
 
@@ -35,5 +49,5 @@ object AsnProviderActor {
   case class AsnNumRequest(ipAddress: IpAddress)
   case class AsnNumResponse(asnRecord: Option[AsnRecord])
 
-  def param: Props = Props(new AsnProviderActor())
+  def param(refreshRate: Option[FiniteDuration] = None): Props = Props(new AsnProviderActor(refreshRate))
 }
