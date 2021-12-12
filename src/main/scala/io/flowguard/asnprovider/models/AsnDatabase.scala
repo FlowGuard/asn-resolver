@@ -13,7 +13,7 @@ class AsnDatabase(val ipv4AsnRecords: Seq[AsnRecord], val ipv6AsnRecords: Seq[As
   def searchByIpAddress(ipAddress: IpAddress): Option[AsnRecord] =
     concatRecords.find(_.network.contains(ipAddress))
 
-  def searchByAutonomousNumber(autonomousNumber: String): Seq[AsnRecord] = // TODO autonomous system number should be int
+  def searchByAutonomousNumber(autonomousNumber: Integer): Seq[AsnRecord] =
     concatRecords.filter(_.autonomousSystemNumber == autonomousNumber)
 }
 

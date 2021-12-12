@@ -9,4 +9,4 @@ import com.comcast.ip4s.Cidr
  * @param autonomousSystemNumber ASN number
  * @param autonomousSystemOrganization ASN organization name
  */
-case class AsnRecord(network: Cidr[IpAddress], autonomousSystemNumber: String, autonomousSystemOrganization: String)
+case class AsnRecord(network: Cidr[IpAddress], autonomousSystemNumber: Integer, autonomousSystemOrganization: String)

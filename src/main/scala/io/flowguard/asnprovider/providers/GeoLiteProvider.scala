@@ -8,6 +8,7 @@ import wvlet.log.LogSupport
 
 import java.net.URL
 import java.util.zip.ZipInputStream
+import scala.util.Try
 
 class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
   val permaLink =
@@ -90,14 +91,19 @@ object GeoLiteProvider {
     val csvRecords = rawTable.split('\n').toSeq
     csvRecords.tail.map { // tail - omit csv head
       case s"$network,$autSysNumber,$autSysOrg" =>
-        Cidr.fromString(network) match {
-          case Some(cidr) =>
-            Right(AsnRecord(
-              cidr,
-              autSysNumber,
-              autSysOrg.replaceAll("\"", ""))) // remove quotations mark from composed strings
+        Try(autSysNumber.toInt).toOption match {
           case None =>
-            Left(s"Invalid Cidr network $network")
+            Left(s"Invalid Autonomous System Number $autSysNumber")
+          case Some(validAsn) =>
+            Cidr.fromString(network) match {
+              case Some(cidr) =>
+                Right(AsnRecord(
+                  cidr,
+                  validAsn,
+                  autSysOrg.replaceAll("\"", ""))) // remove quotations mark from composed strings
+              case None =>
+                Left(s"Invalid Cidr network $network")
+            }
         }
       case line => Left(line)
     }
