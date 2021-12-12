@@ -13,7 +13,7 @@ object Config {
   val asnService: ConfigAsnService = {
     val config = ConfigFactory.load().getConfig("asn-service")
     val bindAddress = config.getString("bind-address")
-    val bindPort = config.getString("bind-port")
+    val bindPort = config.getInt("bind-port")
 
     val asnProvider = config.getString("db-provider.provider")
     val refreshRate = {

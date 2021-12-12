@@ -24,11 +24,11 @@ class AsnServiceImplTests
   }
 
   val ipV4AsnRecords = Seq(
-    AsnRecord(Cidr[IpAddress](ip"1.0.0.0", 24), "13335", "CLOUDFLARENET"),
-    AsnRecord(Cidr[IpAddress](ip"1.0.4.0", 22), "38803", "Wirefreebroadband Pty Ltd")
+    AsnRecord(Cidr[IpAddress](ip"1.0.0.0", 24), 13335, "CLOUDFLARENET"),
+    AsnRecord(Cidr[IpAddress](ip"1.0.4.0", 22), 38803, "Wirefreebroadband Pty Ltd")
   )
   val ipV6Records = Seq(
-    AsnRecord(Cidr[IpAddress](ip"2001:200:1000::", 36), "2500", "WIDE Project")
+    AsnRecord(Cidr[IpAddress](ip"2001:200:1000::", 36), 2500, "WIDE Project")
   )
 
   implicit val asnLookup: AsnDatabase = AsnDatabase(ipV4AsnRecords, ipV6Records)
@@ -37,7 +37,7 @@ class AsnServiceImplTests
   "Asn ipv4 lookup" should "find valid value" in {
     val request = AsnNumRequest("1.0.0.10")
     asnServiceImpl.getAsnNum(request).map { reply =>
-      assert(reply.asnNum == "13335")
+      assert(reply.asnNum == 13335)
       assert(reply.asnName == "CLOUDFLARENET")
     }
   }
@@ -61,7 +61,7 @@ class AsnServiceImplTests
   "Asn ipv6 lookup" should "find valid value" in {
     val request = AsnNumRequest("2001:0200:1fff:ffff:ffff:ffff:ffff:ffff")
     asnServiceImpl.getAsnNum(request).map { reply =>
-      assert(reply.asnNum == "2500")
+      assert(reply.asnNum == 2500)
       assert(reply.asnName == "WIDE Project")
     }
   }
