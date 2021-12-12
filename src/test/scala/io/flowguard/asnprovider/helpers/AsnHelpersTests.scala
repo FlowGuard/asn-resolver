@@ -12,23 +12,12 @@ class AsnHelpersTests extends AnyFlatSpec {
         |1.0.0.0/24,13335,CLOUDFLARENET
         |1.0.4.0/22,38803,"Wirefreebroadband Pty Ltd"
         |1.0.64.0/18,18144,"Energia Communications,Inc."
+        |2001:200:a00::/39,2500,"WIDE Project"
+        |2001:200:900::/40,7660,"Asia Pacific Advanced Network - Japan"
         |""".stripMargin
 
 
     val result = GeoLiteProvider.geoLiteRawTableToAsnRecords(testRawTable)
-    assert(result.size == 3)
-
-    val nw1 = Cidr[IpAddress](ip"1.0.0.0", 24) // TODO not working
-    val nw2 = Cidr[IpAddress](ip"1.0.4.0", 22)
-    val nw3 = Cidr[IpAddress](ip"1.0.64.0", 18)
-
-    result.foreach {
-      case Right(AsnRecord(nw1, "13335", "CLOUDFLARENET")) =>
-      case Right(AsnRecord(nw2, "38803", "Wirefreebroadband Pty Ltd")) =>
-      case Right(AsnRecord(nw3, "18144", "Energia Communications,Inc.")) =>
-      case _ => throw new AssertionError("invalid record")
-    }
+    assert(result.size == 5)
   }
-
-  // TODO ipv6 test
 }

@@ -18,4 +18,4 @@ enablePlugins(AkkaGrpcPlugin)
 
 akkaGrpcGeneratedSources := Seq(AkkaGrpc.Server)
 
-scapegoatVersion in ThisBuild := "1.4.11"
+ThisBuild / scapegoatVersion := "1.4.11"
