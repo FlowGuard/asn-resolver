@@ -6,7 +6,6 @@ import akka.testkit.TestKit
 import com.comcast.ip4s.{Cidr, IpAddress, IpLiteralSyntax}
 import io.flowguard.asnprovider.grpc.AsnNumRequest
 import io.flowguard.asnprovider.models.{AsnDatabase, AsnRecord}
-import io.flowguard.asnprovider.models.AsnRecord
 import io.grpc.Status
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
