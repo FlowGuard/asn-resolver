@@ -10,6 +10,8 @@ import com.comcast.ip4s.IpAddress
 class AsnDatabase(val ipv4AsnRecords: Seq[AsnRecord], val ipv6AsnRecords: Seq[AsnRecord]) {
   private val concatRecords = ipv4AsnRecords ++ ipv6AsnRecords
 
+  def isEmpty: Boolean = ipv4AsnRecords.isEmpty || ipv6AsnRecords.isEmpty
+
   def searchByIpAddress(ipAddress: IpAddress): Option[AsnRecord] =
     concatRecords.find(_.network.contains(ipAddress))
 

@@ -28,8 +28,6 @@ class AsnProviderSpec extends TestKit(ActorSystem("AsnProviderSpec"))
 
   "Asn provider" should {
     val asnProviderActor: ActorRef = system.actorOf(Props(new AsnProviderActor(None)), "asnProviderActor")
-    Thread.sleep(500) // wait for actor init
-
     "return some data on valid asn request" in {
       asnProviderActor ! AsnNumRequest(ip"1.0.0.0")
       expectMsg(AsnNumResponse(Some(testRecord)))
