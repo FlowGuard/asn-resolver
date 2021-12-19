@@ -1,9 +1,9 @@
 package io.flowguard.asnprovider.providers
 
-import akka.actor.{Actor, ActorLogging, Props, Timers}
+import akka.actor.{Actor, Props, Timers}
 import com.comcast.ip4s.IpAddress
 import io.flowguard.asnprovider.models.{AsnDatabase, AsnRecord}
-import Implicits.fromConfig
+import io.flowguard.asnprovider.providers.Implicits.fromConfig
 import wvlet.log.LogSupport
 
 import scala.concurrent.duration._
@@ -14,7 +14,7 @@ import scala.language.postfixOps
  * @param refreshRate ASN database refresh rate. Database is loaded only once at startup when it is None
  * @param asnProvider ASN provider
  */
-class AsnProviderActor(refreshRate: Option[FiniteDuration])(implicit asnProvider: AsnProvider) extends Actor // TODO tests
+class AsnProviderActor(refreshRate: Option[FiniteDuration])(implicit asnProvider: AsnProvider) extends Actor
   with LogSupport
   with Timers {
   import AsnProviderActor._
