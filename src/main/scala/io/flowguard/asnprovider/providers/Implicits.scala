@@ -31,6 +31,8 @@ object Implicits extends LogSupport {
           }
         }
         new GeoLiteProvider(apiKey)
+      case _ =>
+        throw new IllegalArgumentException(s"Unsupported asn provider")
     }
   }
 }

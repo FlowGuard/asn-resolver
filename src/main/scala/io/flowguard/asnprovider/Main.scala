@@ -1,7 +1,7 @@
 package io.flowguard.asnprovider
 
 import akka.actor.ActorSystem
-import com.typesafe.config.{ConfigFactory, ConfigValue, ConfigValueFactory}
+import com.typesafe.config.{ConfigFactory, ConfigValueFactory}
 
 object Main extends App {
   val conf = ConfigFactory.load()
@@ -12,5 +12,4 @@ object Main extends App {
   AsnProviderServer(system).run()
 }
 
-// TODO dockerfile
 // TODO add readme
