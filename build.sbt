@@ -8,7 +8,7 @@ val akkaVersion = "2.6.9" // must be compatible with scala grpc plugin
 lazy val root = project
   .in(file("."))
   .settings(
-    name := "fg-asn-provider",
+    name := "fg-asn-resolver",
     maintainer := "Jakub Pravda <jakub.pravda@comsource.cz>",
     version := "0.0.1-SNAPSHOT",
 
@@ -23,4 +23,4 @@ akkaGrpcGeneratedSources := Seq(AkkaGrpc.Server)
 
 ThisBuild / scapegoatVersion := "1.4.11"
 
-Docker / packageName := "fg-asn-service"
+Docker / packageName := "fg-asn-resolver"
