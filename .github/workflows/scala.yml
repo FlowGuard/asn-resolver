@@ -18,7 +18,5 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-    - name: Build code
-      run: sbt build
     - name: Run tests
       run: sbt test
