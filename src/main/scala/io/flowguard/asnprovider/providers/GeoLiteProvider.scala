@@ -11,7 +11,7 @@ import java.util.zip.ZipInputStream
 import scala.util.Try
 
 class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
-  val permaLink =
+  val staticLink =
     s"https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=$apiKey&suffix=zip"
 
   def getValidOrReportFailed(d: DecodedRecord): Option[AsnRecord] = {
@@ -30,7 +30,7 @@ class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
 
     info("Loading Maxmind ASN database...")
     // download from source
-    val asnBlocks = downloadFromMaxmindAndExtract(permaLink) // TODO download should be functional, method must be testable
+    val asnBlocks = downloadFromMaxmindAndExtract(staticLink) // TODO download should be functional, method must be testable
 
     // convert to proper format
     asnBlocks match {
@@ -53,7 +53,7 @@ class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
   }
 
   // return (ipv4table, ipv6table)
-  def downloadFromMaxmindAndExtract(permaLink: String): (Option[String], Option[String]) = {
+  def downloadFromMaxmindAndExtract(maxmindLink: String): (Option[String], Option[String]) = {
     def readAsnFile(zs: ZipInputStream): String = {
       val sb = new StringBuilder
       val buffer =  new Array[Byte](1024)
@@ -64,7 +64,7 @@ class GeoLiteProvider(apiKey: String) extends AsnProvider with LogSupport {
     val geoLiteIpv4File = "GeoLite2-ASN-Blocks-IPv4.csv"
     val geoLiteIpv6File = "GeoLite2-ASN-Blocks-IPv6.csv"
 
-    val urlStream = new URL(permaLink).openStream()
+    val urlStream = new URL(maxmindLink).openStream()
     val zipStream = new ZipInputStream(urlStream)
 
     val asnBlocks = LazyList.continually(zipStream.getNextEntry).takeWhile(_ != null).flatMap { ze =>
