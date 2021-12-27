@@ -12,8 +12,6 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpecLike
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class AsnServiceImplTests extends TestKit(ActorSystem("AsnServiceImplSpec"))
   with AnyFlatSpecLike
   with BeforeAndAfterAll {

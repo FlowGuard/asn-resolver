@@ -20,3 +20,5 @@ jobs:
         distribution: 'adopt'
     - name: Run tests
       run: sbt test
+    - name: Publish docker image
+      run: sbt docker:publish

@@ -10,7 +10,7 @@ lazy val root = project
   .settings(
     name := "fg-asn-resolver",
     maintainer := "Jakub Pravda <jakub.pravda@comsource.cz>",
-    version := "0.0.1-SNAPSHOT",
+    version := "0.1.0",
 
     scalaVersion := scala2Version,
     libraryDependencies += "com.comcast" %% "ip4s-core" % "3.0.3",
@@ -23,7 +23,10 @@ akkaGrpcGeneratedSources := Seq(AkkaGrpc.Server)
 
 ThisBuild / scapegoatVersion := "1.4.11"
 
-Docker / packageName := "fg-asn-resolver"
+Docker / packageName := "asn-resolver"
+Docker / dockerRepository := Some("ghcr.io")
+Docker / dockerUsername := Some("flowguard")
+Docker / dockerUpdateLatest := true
 
 Test / fork := true
 Test / envVars := Map("ASN_PROVIDER" -> "dummy", "ASN_DB_REFRESH_RATE" -> "1 hour")
