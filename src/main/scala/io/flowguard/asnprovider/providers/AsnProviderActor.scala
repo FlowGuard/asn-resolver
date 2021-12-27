@@ -3,7 +3,6 @@ package io.flowguard.asnprovider.providers
 import akka.actor.{Actor, Props, Timers}
 import com.comcast.ip4s.IpAddress
 import io.flowguard.asnprovider.models.{AsnDatabase, AsnRecord}
-import io.flowguard.asnprovider.providers.Implicits.fromConfig
 import wvlet.log.LogSupport
 
 import scala.concurrent.duration._
@@ -51,5 +50,6 @@ object AsnProviderActor {
   case class AsnNumRequest(ipAddress: IpAddress)
   case class AsnNumResponse(asnRecord: Option[AsnRecord])
 
-  def param(refreshRate: Option[FiniteDuration] = None): Props = Props(new AsnProviderActor(refreshRate))
+  def param(refreshRate: Option[FiniteDuration] = None)(implicit asnProvider: AsnProvider): Props =
+    Props(new AsnProviderActor(refreshRate))
 }

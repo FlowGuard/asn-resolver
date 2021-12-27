@@ -24,3 +24,6 @@ akkaGrpcGeneratedSources := Seq(AkkaGrpc.Server)
 ThisBuild / scapegoatVersion := "1.4.11"
 
 Docker / packageName := "fg-asn-resolver"
+
+Test / fork := true
+Test / envVars := Map("ASN_PROVIDER" -> "dummy", "ASN_DB_REFRESH_RATE" -> "1 hour")

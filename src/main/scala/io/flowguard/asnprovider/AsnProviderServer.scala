@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import io.flowguard.asnprovider.grpc.AsnServiceHandler
+import io.flowguard.asnprovider.providers.Implicits.fromConfig
 import wvlet.log.LogSupport
 
 import scala.concurrent.{ExecutionContext, Future}

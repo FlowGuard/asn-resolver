@@ -6,6 +6,7 @@ import akka.testkit.TestKit
 import com.comcast.ip4s.{Cidr, IpAddress, IpLiteralSyntax}
 import io.flowguard.asnprovider.grpc.AsnNumRequest
 import io.flowguard.asnprovider.models.{AsnDatabase, AsnRecord}
+import io.flowguard.asnprovider.providers.AsnProvider
 import io.grpc.Status
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
@@ -29,12 +30,16 @@ class AsnServiceImplTests extends TestKit(ActorSystem("AsnServiceImplSpec"))
     AsnRecord(Cidr[IpAddress](ip"2001:200:1000::", 36), 2500, "WIDE Project")
   )
 
-  implicit val asnLookup: AsnDatabase = AsnDatabase(ipV4AsnRecords, ipV6Records)
+  implicit val testProvider: AsnProvider = new AsnProvider {
+    override def load: AsnDatabase = AsnDatabase(ipV4AsnRecords, ipV6Records)
+  }
+
   val asnServiceImpl = new AsnServiceImpl(system)
 
   "Asn ipv4 lookup" should "find valid value" in {
     val request = AsnNumRequest("1.0.0.10")
-    asnServiceImpl.getAsnNum(request).map { reply =>
+    println("HELLO!")
+    ScalaFutures.whenReady(asnServiceImpl.getAsnNum(request)) { reply =>
       assert(reply.asnNum == 13335)
       assert(reply.asnName == "CLOUDFLARENET")
     }
@@ -58,7 +63,7 @@ class AsnServiceImplTests extends TestKit(ActorSystem("AsnServiceImplSpec"))
 
   "Asn ipv6 lookup" should "find valid value" in {
     val request = AsnNumRequest("2001:0200:1fff:ffff:ffff:ffff:ffff:ffff")
-    asnServiceImpl.getAsnNum(request).map { reply =>
+    ScalaFutures.whenReady(asnServiceImpl.getAsnNum(request)) { reply =>
       assert(reply.asnNum == 2500)
       assert(reply.asnName == "WIDE Project")
     }

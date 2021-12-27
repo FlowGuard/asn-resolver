@@ -7,14 +7,14 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.comcast.ip4s.IpAddress
 import io.flowguard.asnprovider.grpc.{AsnNumReply, AsnNumRequest, AsnService}
-import io.flowguard.asnprovider.providers.AsnProviderActor
+import io.flowguard.asnprovider.providers.{AsnProvider, AsnProviderActor}
 import io.grpc.Status
 import wvlet.log.LogSupport
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
-class AsnServiceImpl(system: ActorSystem) extends AsnService with LogSupport {
+class AsnServiceImpl(system: ActorSystem)(implicit asnProvider: AsnProvider) extends AsnService with LogSupport {
   private val invalidIpAddressMetadata: Metadata = new MetadataBuilder().build()
   private val asnNotFoundMetadata: Metadata = new MetadataBuilder().build()
 
