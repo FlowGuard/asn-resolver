@@ -23,10 +23,13 @@ akkaGrpcGeneratedSources := Seq(AkkaGrpc.Server)
 
 ThisBuild / scapegoatVersion := "1.4.11"
 
-Docker / packageName := "asn-resolver"
-Docker / dockerRepository := Some("ghcr.io")
-Docker / dockerUsername := Some("flowguard")
-Docker / dockerUpdateLatest := true
+// docker settings
+dockerUpdateLatest := true
+packageName := "asn-resolver"
+dockerRepository := Some("ghcr.io")
+dockerUsername := Some("flowguard")
+dockerExposedPorts := Seq(8090)
 
+// test settings
 Test / fork := true
 Test / envVars := Map("ASN_PROVIDER" -> "dummy", "ASN_DB_REFRESH_RATE" -> "1 hour")
