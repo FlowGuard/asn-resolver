@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  REGISTRY: ghcr.io
+
 jobs:
   build:
 
@@ -20,5 +23,13 @@ jobs:
         distribution: 'adopt'
     - name: Run tests
       run: sbt test
+
+    - name: Login to the container registry
+      uses: docker/login-action
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Publish docker image
       run: sbt docker:publish
